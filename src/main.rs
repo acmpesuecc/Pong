@@ -23,14 +23,15 @@ fn main(){
     let mut custom_font = rl.get_font_default();
 
     let mut ball = Ball::init(SCREEN_WIDTH/2, SCREEN_HEIGHT, 5.0, 5.0);
-    let mut paddle1 = Paddle::init(50, (SCREEN_HEIGHT/2)-50, 5.0); //Relative positions and velocity
+    let mut paddle1 = Paddle::init(50, (SCREEN_HEIGHT/2)-50, 5.0); 
     let mut paddle2 = Paddle::init(SCREEN_WIDTH-50-10, (SCREEN_HEIGHT/2)-50, 5.0);
 
     let mut score1 = 0;
     let mut score2 = 0;
-    let mut timer = 60.0; //game terminates after 60 seconds
+    let mut timer = 60.0; 
 
-    let mut game_mode = 0; //default: multi-player
+    let mut game_mode = 0; 
+    let mut cooldown = 0.0; 
 
     while !rl.window_should_close() {
         if game_mode == 0{
@@ -39,10 +40,12 @@ fn main(){
                     KeyboardKey::KEY_ONE => {
                         game_mode = 1;
                         reset_game(&mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer);
+                        cooldown = 0.0;
                     },
                     KeyboardKey::KEY_TWO => {
                         game_mode = 2;
                         reset_game(&mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer);
+                        cooldown = 0.0;
                     },
                     _ => {}
                 }
@@ -54,11 +57,11 @@ fn main(){
             draw.draw_text("Press 2 for single player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 + 30, 30, Color::WHITE);
         }
         else {
+            let frame_time = rl.get_frame_time();
             match game_mode {
-                1 => multi_player(&mut rl,  &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font),
+                1 => multi_player(&mut rl,  &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font, &mut cooldown, frame_time),
                 2 => single_player(&mut rl, &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font),
                 _ => unreachable!(),
-
             }
             if timer <= 0.0{
                 break;
@@ -66,7 +69,6 @@ fn main(){
         }
     }
 
-    //Winner
     let mut draw = rl.begin_drawing(&thread);
     draw.clear_background(Color::BLACK);
     if score1>score2{

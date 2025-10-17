@@ -14,7 +14,6 @@ pub fn single_player(rl: &mut RaylibHandle, thread: &RaylibThread, ball: &mut Ba
     ball.change_dir(SCREEN_WIDTH, SCREEN_HEIGHT);
     paddle2.update(SCREEN_HEIGHT, draw.is_key_down(KeyboardKey::KEY_UP), draw.is_key_down(KeyboardKey::KEY_DOWN));
 
-   //Auto-controlled paddle
    let target_y = (ball.y - 50).clamp(0, SCREEN_HEIGHT - 100);
    if (paddle1.y - target_y).abs() > paddle1.speed as i32{
        if paddle1.y < target_y{
@@ -35,17 +34,54 @@ pub fn single_player(rl: &mut RaylibHandle, thread: &RaylibThread, ball: &mut Ba
     draw_game(&mut draw, ball, paddle1, paddle2, *score1, *score2, *timer, font);
 }
 
-pub fn multi_player(rl: &mut RaylibHandle, thread: &RaylibThread, ball: &mut Ball, paddle1: &mut Paddle, paddle2: &mut Paddle, score1: &mut i32, score2: &mut i32, timer: &mut f32, font: &WeakFont){
+pub fn multi_player(
+    rl: &mut RaylibHandle,
+    thread: &RaylibThread,
+    ball: &mut Ball,
+    paddle1: &mut Paddle,
+    paddle2: &mut Paddle,
+    score1: &mut i32,
+    score2: &mut i32,
+    timer: &mut f32,
+    font: &WeakFont,
+    cooldown: &mut f32,
+    frame_time: f32
+) {
     let mut draw = rl.begin_drawing(thread);
     draw.clear_background(Color::BLACK);
+
+    if *cooldown > 0.0 {
+        *cooldown -= frame_time;
+        draw.draw_text(
+            &format!("Next round in {:.1}...", cooldown.max(0.0)),
+            SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2, 30, Color::WHITE
+        );
+        draw_game(&mut draw, ball, paddle1, paddle2, *score1, *score2, *timer, font);
+        return;
+    }
 
     ball.change_dir(SCREEN_WIDTH, SCREEN_HEIGHT);
     paddle1.update(SCREEN_HEIGHT, draw.is_key_down(KeyboardKey::KEY_W), draw.is_key_down(KeyboardKey::KEY_S));
     paddle2.update(SCREEN_HEIGHT, draw.is_key_down(KeyboardKey::KEY_UP), draw.is_key_down(KeyboardKey::KEY_DOWN));
 
-    update_game_state(ball, paddle1, paddle2, score1, score2);
+    let mut scored = false;
+    if (ball.x + 10) >= SCREEN_WIDTH {
+        *score1 += 1;
+        *ball = Ball::init(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, -5.0, -5.0);
+        *cooldown = 2.0;
+        scored = true;
+    }
+    if ball.x <= 0 {
+        *score2 += 1;
+        *ball = Ball::init(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 5.0, 5.0);
+        *cooldown = 2.0;
+        scored = true;
+    }
 
-    *timer -= draw.get_frame_time();
+    if !scored {
+        update_game_state(ball, paddle1, paddle2, score1, score2);
+        *timer -= frame_time;
+    }
 
     draw_game(&mut draw, ball, paddle1, paddle2, *score1, *score2, *timer, font);
 }

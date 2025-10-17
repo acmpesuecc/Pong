@@ -52,9 +52,9 @@ fn main(){
             }
 
             let mut draw = rl.begin_drawing(&thread);
-            draw.clear_background(Color::BLACK);
-            draw.draw_text("Press 1 for multi-player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 - 30, 30, Color::WHITE);
-            draw.draw_text("Press 2 for single player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 + 30, 30, Color::WHITE);
+            draw.clear_background(Color::new(24, 29, 49, 255));
+            draw.draw_text("Press 1 for multi-player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 - 30, 30, Color::new(230, 221, 59, 255));
+            draw.draw_text("Press 2 for single player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 + 30, 30, Color::new(127, 199, 217, 255));
         }
         else {
             let frame_time = rl.get_frame_time();
@@ -70,17 +70,17 @@ fn main(){
     }
 
     let mut draw = rl.begin_drawing(&thread);
-    draw.clear_background(Color::BLACK);
+    draw.clear_background(Color::new(24, 29, 49, 255));
     if score1>score2{
-        draw.draw_text("Player1 wins!", SCREEN_WIDTH as i32 /2 - 100, SCREEN_HEIGHT as i32 /2, 50, Color::WHITE);
+        draw.draw_text("Player1 wins!", SCREEN_WIDTH as i32 /2 - 100, SCREEN_HEIGHT as i32 /2, 50, Color::new(230, 221, 59, 255));
     }
     else if score2>score1{
-        draw.draw_text("Player2 wins!", SCREEN_WIDTH as i32 /2 - 100, SCREEN_HEIGHT as i32 /2, 50, Color::WHITE);
+        draw.draw_text("Player2 wins!", SCREEN_WIDTH as i32 /2 - 100, SCREEN_HEIGHT as i32 /2, 50, Color::new(127, 199, 217, 255));
     }
     else{
-        draw.draw_text("Tie!", SCREEN_WIDTH as i32 /2 - 100, SCREEN_HEIGHT as i32 /2, 50, Color::WHITE);
+        draw.draw_text("Tie!", SCREEN_WIDTH as i32 /2 - 100, SCREEN_HEIGHT as i32 /2, 50, Color::new(247, 247, 247, 255));
     }
-    draw.draw_text("Press ESC to exit", SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2 + 60, 30, Color::WHITE);
+    draw.draw_text("Press ESC to exit", SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2 + 60, 30, Color::new(247, 247, 247, 255));
     drop(draw);
 
     while !rl.window_should_close() {

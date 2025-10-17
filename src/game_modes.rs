@@ -107,10 +107,10 @@ fn update_game_state(ball: &mut Ball, paddle1: &Paddle, paddle2: &Paddle, score1
 }
 
 fn draw_game(draw: &mut RaylibDrawHandle, ball: &mut Ball, paddle1: &Paddle, paddle2: &Paddle, score1: i32, score2: i32, timer: f32, font: &WeakFont){
-    draw.clear_background(Color::BLACK);
-    draw.draw_text_ex(font, &format!("Player 1: {}", score1), Vector2::new(20.0, 10.0), 40.0, 2.0, Color::AQUA);
-    draw.draw_text_ex(font, &format!("Timer: {}", timer), Vector2::new((SCREEN_WIDTH/2 - 70) as f32, 10.0), 40.0, 2.0, Color::AQUA);
-    draw.draw_text_ex(font, &format!("Player 2: {}", score2), Vector2::new((SCREEN_WIDTH - 180) as f32, 10.0), 40.0, 2.0, Color::AQUA);
+    draw.clear_background(Color::new(24, 29, 49, 255));
+    draw.draw_text_ex(font, &format!("Player 1: {}", score1), Vector2::new(24.0, 36.0), 38.0, 2.0, Color::new(230, 221, 59, 255));
+    draw.draw_text_ex(font, &format!("Player 2: {}", score2), Vector2::new(24.0, 86.0), 38.0, 2.0, Color::new(127, 199, 217, 255));
+    draw.draw_text_ex(font, &format!("Timer: {:>4.1}", timer), Vector2::new(24.0, 136.0), 32.0, 2.0, Color::new(247, 247, 247, 255));
 
     paddle1.draw(draw);
     paddle2.draw(draw);

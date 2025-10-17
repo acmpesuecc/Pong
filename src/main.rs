@@ -20,7 +20,7 @@ fn main(){
         .build();
     rl.set_target_fps(60);
 
-    let mut custom_font = rl.get_font_default();
+    let custom_font = rl.get_font_default();
 
     let mut ball = Ball::init(SCREEN_WIDTH/2, SCREEN_HEIGHT, 5.0, 5.0);
     let mut paddle1 = Paddle::init(50, (SCREEN_HEIGHT/2)-50, 5.0); 

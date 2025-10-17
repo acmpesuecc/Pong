@@ -87,10 +87,13 @@ pub fn multi_player(
 }
 
 fn update_game_state(ball: &mut Ball, paddle1: &Paddle, paddle2: &Paddle, score1: &mut i32, score2: &mut i32){
-    if (ball.x <= paddle1.x + 10) && (ball.y >= paddle1.y) && (ball.y <= paddle2.y + 100){
+    if ball.vx < 0.0 && (ball.x <= paddle1.x + 10) && (ball.x + 10 >= paddle1.x) && (ball.y + 10 >= paddle1.y) && (ball.y <= paddle1.y + 100) {
+        ball.x = paddle1.x + 10; 
         ball.vx = -ball.vx;
     }
-    if (ball.x + 10 >= paddle2.x) && (ball.y >= paddle2.y) && (ball.y <= paddle2.y + 100){
+
+    if ball.vx > 0.0 && (ball.x + 10 >= paddle2.x) && (ball.x <= paddle2.x + 10) && (ball.y + 10 >= paddle2.y) && (ball.y <= paddle2.y + 100) {
+        ball.x = paddle2.x - 10; 
         ball.vx = -ball.vx;
     }
     if (ball.x + 10) >= SCREEN_WIDTH{

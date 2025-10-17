@@ -20,29 +20,32 @@ fn main(){
         .build();
     rl.set_target_fps(60);
 
-    let mut custom_font = rl.get_font_default();
+    let custom_font = rl.get_font_default();
 
-    let mut ball = Ball::init(SCREEN_WIDTH/2, SCREEN_HEIGHT, 5.0, 5.0);
-    let mut paddle1 = Paddle::init(50, (SCREEN_HEIGHT/2)-50, 5.0); //Relative positions and velocity
+    let mut ball = Ball::init(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 5.0, 5.0);
+    let mut paddle1 = Paddle::init(50, (SCREEN_HEIGHT/2)-50, 5.0);
     let mut paddle2 = Paddle::init(SCREEN_WIDTH-50-10, (SCREEN_HEIGHT/2)-50, 5.0);
 
     let mut score1 = 0;
     let mut score2 = 0;
-    let mut timer = 60.0; //game terminates after 60 seconds
+    let mut timer = 60.0;
 
-    let mut game_mode = 0; //default: multi-player
+    let mut is_cooldown_active = false;
+    let mut cooldown_timer = 0.0; 
+
+    let mut game_mode = 0;
 
     while !rl.window_should_close() {
         if game_mode == 0{
-            if let Some(key) =  rl.get_key_pressed(){
+            if let Some(key) = rl.get_key_pressed(){
                 match key{
                     KeyboardKey::KEY_ONE => {
                         game_mode = 1;
-                        reset_game(&mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer);
+                        reset_game(&mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &mut is_cooldown_active, &mut cooldown_timer);
                     },
                     KeyboardKey::KEY_TWO => {
                         game_mode = 2;
-                        reset_game(&mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer);
+                        reset_game(&mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &mut is_cooldown_active, &mut cooldown_timer);
                     },
                     _ => {}
                 }
@@ -55,7 +58,7 @@ fn main(){
         }
         else {
             match game_mode {
-                1 => multi_player(&mut rl,  &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font),
+                1 => multi_player(&mut rl, &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font, &mut is_cooldown_active, &mut cooldown_timer),
                 2 => single_player(&mut rl, &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font),
                 _ => unreachable!(),
 
@@ -66,7 +69,6 @@ fn main(){
         }
     }
 
-    //Winner
     let mut draw = rl.begin_drawing(&thread);
     draw.clear_background(Color::BLACK);
     if score1>score2{
@@ -86,11 +88,13 @@ fn main(){
     }
 }
 
-fn reset_game(ball: &mut Ball, paddle1: &mut Paddle, paddle2: &mut Paddle, score1: &mut i32, score2: &mut i32, timer: &mut f32){
+fn reset_game(ball: &mut Ball, paddle1: &mut Paddle, paddle2: &mut Paddle, score1: &mut i32, score2: &mut i32, timer: &mut f32, cooldown_active: &mut bool, cooldown_timer: &mut f32){
     *ball = Ball::init(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 5.0, 5.0);
     *paddle1 = Paddle::init(50, (SCREEN_HEIGHT/2) - 50, 5.0);
     *paddle2 = Paddle::init(SCREEN_WIDTH - 50 - 10, (SCREEN_HEIGHT/2) - 50, 5.0);
     *score1 = 0;
     *score2 = 0;
     *timer = 60.0;
+    *cooldown_active = false; 
+    *cooldown_timer = 0.0;
 }

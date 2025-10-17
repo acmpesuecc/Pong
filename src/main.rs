@@ -20,7 +20,7 @@ fn main(){
         .build();
     rl.set_target_fps(60);
 
-    let mut custom_font = rl.load_font(&thread, "/home/nikhil/rustproj/pingpong/assets/NotoSans-Regular.ttf").unwrap();
+    let mut custom_font = rl.get_font_default();
 
     let mut ball = Ball::init(SCREEN_WIDTH/2, SCREEN_HEIGHT, 5.0, 5.0);
     let mut paddle1 = Paddle::init(50, (SCREEN_HEIGHT/2)-50, 5.0); //Relative positions and velocity
@@ -55,8 +55,8 @@ fn main(){
         }
         else {
             match game_mode {
-                1 => multi_player(&mut rl,  &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &mut custom_font),
-                2 => single_player(&mut rl, &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &mut custom_font),
+                1 => multi_player(&mut rl,  &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font),
+                2 => single_player(&mut rl, &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font),
                 _ => unreachable!(),
 
             }

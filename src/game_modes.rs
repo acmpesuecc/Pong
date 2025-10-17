@@ -7,7 +7,7 @@ use crate::paddle::Paddle;
 const SCREEN_WIDTH: i32 = 1000;
 const SCREEN_HEIGHT: i32 = 800;
 
-pub fn single_player(rl: &mut RaylibHandle, thread: &RaylibThread, ball: &mut Ball, paddle1: &mut Paddle, paddle2: &mut Paddle, score1: &mut i32, score2: &mut i32, timer: &mut f32, font: &Font){
+pub fn single_player(rl: &mut RaylibHandle, thread: &RaylibThread, ball: &mut Ball, paddle1: &mut Paddle, paddle2: &mut Paddle, score1: &mut i32, score2: &mut i32, timer: &mut f32, font: &WeakFont){
     let mut draw = rl.begin_drawing(thread);
     draw.clear_background(Color::BLACK);
 
@@ -35,7 +35,7 @@ pub fn single_player(rl: &mut RaylibHandle, thread: &RaylibThread, ball: &mut Ba
     draw_game(&mut draw, ball, paddle1, paddle2, *score1, *score2, *timer, font);
 }
 
-pub fn multi_player(rl: &mut RaylibHandle, thread: &RaylibThread, ball: &mut Ball, paddle1: &mut Paddle, paddle2: &mut Paddle, score1: &mut i32, score2: &mut i32, timer: &mut f32, font: &Font){
+pub fn multi_player(rl: &mut RaylibHandle, thread: &RaylibThread, ball: &mut Ball, paddle1: &mut Paddle, paddle2: &mut Paddle, score1: &mut i32, score2: &mut i32, timer: &mut f32, font: &WeakFont){
     let mut draw = rl.begin_drawing(thread);
     draw.clear_background(Color::BLACK);
 
@@ -67,7 +67,7 @@ fn update_game_state(ball: &mut Ball, paddle1: &Paddle, paddle2: &Paddle, score1
     }
 }
 
-fn draw_game(draw: &mut RaylibDrawHandle, ball: &mut Ball, paddle1: &Paddle, paddle2: &Paddle, score1: i32, score2: i32, timer: f32, font: &Font){
+fn draw_game(draw: &mut RaylibDrawHandle, ball: &mut Ball, paddle1: &Paddle, paddle2: &Paddle, score1: i32, score2: i32, timer: f32, font: &WeakFont){
     draw.clear_background(Color::BLACK);
     draw.draw_text_ex(font, &format!("Player 1: {}", score1), Vector2::new(20.0, 10.0), 40.0, 2.0, Color::AQUA);
     draw.draw_text_ex(font, &format!("Timer: {}", timer), Vector2::new((SCREEN_WIDTH/2 - 70) as f32, 10.0), 40.0, 2.0, Color::AQUA);

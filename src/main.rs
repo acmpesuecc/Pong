@@ -33,6 +33,7 @@ fn main(){
     let mut game_mode = 0; 
     let mut cooldown = 0.0; 
 
+    let mut ai_difficulty = 1; // 1: easy, 2: medium, 3: hard
     while !rl.window_should_close() {
         if game_mode == 0{
             if let Some(key) =  rl.get_key_pressed(){
@@ -47,20 +48,39 @@ fn main(){
                         reset_game(&mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer);
                         cooldown = 0.0;
                     },
+                    KeyboardKey::KEY_THREE => {
+                        ai_difficulty = 1;
+                    },
+                    KeyboardKey::KEY_FOUR => {
+                        ai_difficulty = 2;
+                    },
+                    KeyboardKey::KEY_FIVE => {
+                        ai_difficulty = 3;
+                    },
                     _ => {}
                 }
             }
 
             let mut draw = rl.begin_drawing(&thread);
             draw.clear_background(Color::new(24, 29, 49, 255));
-            draw.draw_text("Press 1 for multi-player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 - 30, 30, Color::new(230, 221, 59, 255));
-            draw.draw_text("Press 2 for single player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 + 30, 30, Color::new(127, 199, 217, 255));
+            draw.draw_text("Press 1 for multi-player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 - 60, 30, Color::new(230, 221, 59, 255));
+            draw.draw_text("Press 2 for single player", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 - 20, 30, Color::new(127, 199, 217, 255));
+            draw.draw_text("Press 3 for Easy AI", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 + 20, 30, Color::new(127, 199, 217, 255));
+            draw.draw_text("Press 4 for Medium AI", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 + 60, 30, Color::new(127, 199, 217, 255));
+            draw.draw_text("Press 5 for Hard AI", SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 + 100, 30, Color::new(127, 199, 217, 255));
+            let diff_str = match ai_difficulty {
+                1 => "Easy",
+                2 => "Medium",
+                3 => "Hard",
+                _ => "Easy",
+            };
+            draw.draw_text(&format!("Current AI: {}", diff_str), SCREEN_WIDTH/2 - 150, SCREEN_HEIGHT/2 + 140, 30, Color::new(230, 221, 59, 255));
         }
         else {
             let frame_time = rl.get_frame_time();
             match game_mode {
                 1 => multi_player(&mut rl,  &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font, &mut cooldown, frame_time),
-                2 => single_player(&mut rl, &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font),
+                2 => single_player(&mut rl, &thread, &mut ball, &mut paddle1, &mut paddle2, &mut score1, &mut score2, &mut timer, &custom_font, ai_difficulty),
                 _ => unreachable!(),
             }
             if timer <= 0.0{
